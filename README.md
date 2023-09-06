@@ -28,10 +28,10 @@ The following stats can be modified:
  - TOTAL ORBS COLLECTED
 
 *OF THESE STATS, THE FOLLOWING WILL NOT STICK ON RESTART*
- ORBS
- DIAMONDS
- ALL TYPES OF SHARDS
- BASEMENT KEYS (and chests you open with the fake keys)
+ - ORBS
+ - DIAMONDS
+ - ALL TYPES OF SHARDS
+ - BASEMENT KEYS (and chests you open with the fake keys)
 
 # HOW TO USE
 - Download and install Visual Studio along with all the necessary C++ packages
