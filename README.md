@@ -4,6 +4,7 @@ There are many different public mods out there that do many different things, bu
 
 # What You Can edit
 The following stats can be modified:
+
  TOTAL JUMPS
  
  TOTAL ATTEMPTS
