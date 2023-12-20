@@ -29,10 +29,10 @@ int main()
 	scanf_s("%d", &value);
 	printf("\nSetting '%s' value to %d!\n", stat_edits::stat_types[input - 1], value);
 
-	auto stats_instance = game.read<DWORD>(game.base + 0x3222D4);
+	auto stats_instance = game.read<DWORD>(game.base + 0x4E82F0);
 
-	auto stat_info = game.read<stat_edits::StatInfo*>(stats_instance + 0x134);
-	auto stat_info_delta = game.read<stat_edits::StatInfo*>(stats_instance + 0x13C);
+	auto stat_info = game.read<stat_edits::StatInfo*>(stats_instance + 0x164);
+	auto stat_info_delta = game.read<stat_edits::StatInfo*>(stats_instance + 0x16C);
 
 	int* stat_info_delta_addr = stat_edits::get_stat_addr(game, stat_info_delta, input);
 	if (!stat_info_delta_addr)
@@ -54,6 +54,6 @@ int main()
 
 	game.write<int>(stat_info_addr, value + delta);
 	printf("Finished!\n\n");
-	system("pause");
-	return 0;
+	PAUSE();
+	return EXIT_SUCCESS;
 }
