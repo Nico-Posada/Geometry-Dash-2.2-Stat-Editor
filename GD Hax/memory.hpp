@@ -52,7 +52,7 @@ public:
 		}
 		
 		if (!this->base || !this->hProc)
-			printf("FAILED TO GET INFO | base: %X, hProc: %X\n", this->base, this->hProc);
+			printf("FAILED TO GET INFO | base: %X, hProc: %X\n", this->base, (unsigned int)this->hProc);
 		else
 			attached = true;
 

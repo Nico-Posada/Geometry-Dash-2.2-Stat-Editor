@@ -12,7 +12,7 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	stat_edits::StatType input = stat_edits::StatType(-1);
+	stat_edits::StatType input = stat_edits::StatType::NONE;
 	while (input <= 0 || stat_edits::StatType::TOTAL_COUNT < input)
 	{
 		system("cls");
