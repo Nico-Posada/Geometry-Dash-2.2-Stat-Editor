@@ -59,3 +59,4 @@ The following stats can be modified:
 - Download and install Visual Studio along with all the necessary C++ packages
 - Open the .sln file, set the mode to 'Release' and the platform to 'x86'
 - Build project, and enjoy modding your stats
+- Executable file will be located in the `build` directory
