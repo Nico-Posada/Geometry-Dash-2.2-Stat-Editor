@@ -1,2 +1,0 @@
-C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvarsx86_amd64.bat
-CL.exe /c /Zi /nologo /W3 /WX- /diagnostics:column /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /permissive- /Fo"GD Hax\obj\Release\\" /Fd"GD Hax\obj\Release\vc143.pdb" /external:W3 /Gd /TP /analyze- /FC /errorReport:prompt "GD Hax\GDExploits.cpp" "GD Hax\main.cpp"
