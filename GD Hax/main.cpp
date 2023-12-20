@@ -12,7 +12,7 @@ int main()
 		return EXIT_FAILURE;
 	}
 
-	stat_edits::StatType input = stat_edits::StatType::NONE;
+	stat_edits::StatType input = stat_edits::StatType(-1);
 	while (input <= 0 || stat_edits::StatType::TOTAL_COUNT < input)
 	{
 		system("cls");
@@ -53,6 +53,7 @@ int main()
 	}
 
 	game.write<int>(stat_info_addr, value + delta);
+
 	printf("Finished!\n\n");
 	PAUSE();
 	return EXIT_SUCCESS;
