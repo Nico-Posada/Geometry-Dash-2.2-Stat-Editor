@@ -59,6 +59,3 @@ The following stats can be modified:
 - Download and install Visual Studio along with all the necessary C++ packages
 - Open the .sln file, set the mode to 'Release' and the platform to 'x86'
 - Build project, and enjoy modding your stats
-
-# TODO
-- Been working on a way to hard unlock (they stay unlocked on restart) all items in the game. So far, I've been able to unlock all Star challenges and Demon challenges along with a few miscellaneous items, but it's nowhere near enough, so I'll leave that off to the side until I can figure out a better solution.
