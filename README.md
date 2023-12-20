@@ -1,5 +1,5 @@
 # 2.2 IS OUT!!!!
-The method for reading the game's stats hasnt been changed, but a few of the offsets did change, so those have been updated. New things were added so you can modify those too.
+The method for reading the game's stats hasnt been changed, but a few of the offsets did change, so those have been updated. New stats were added so you can modify those too.
 
 # Geometry Dash Stat Editor
 Stat editor for Geometry Dash. Game blew up in popularity for some reason, and I figured it would be a fun game to try to mod.
