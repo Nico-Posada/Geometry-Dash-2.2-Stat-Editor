@@ -2,50 +2,78 @@
 #include "memory.hpp"
 #include "GDExploits.hpp"
 
-void printStatRow(int index1, const char* stat1)
+void print_stat_row(int index, const char* stat)
 {
-    printf(" %2i) %-25s", index1, stat1);
+    printf(" %2i) %-25s", index, stat);
+}
+
+stat_edits::StatType try_parse_input(const char* buffer)
+{
+    if (IS_TRM_CHR(buffer[0]))
+        return stat_edits::StatType::INVALID;
+
+    if ((buffer[0] | 0x20) == 'q' && IS_TRM_CHR(buffer[1]))
+        return stat_edits::StatType::NONE;
+        
+    for (int i = 0; !IS_TRM_CHR(buffer[i]); ++i) {
+        if (!isdigit(buffer[i]))
+            return stat_edits::StatType::INVALID;
+    }
+
+    auto result = stat_edits::StatType(atoi(buffer));
+    if (stat_edits::StatType::NONE < result && result <= stat_edits::StatType::TOTAL_COUNT)
+        return result;
+
+    return stat_edits::StatType::INVALID;
 }
 
 int main()
 {
-    const int totalOptions = 31;  // Making it check is painful so this forces it to display 31 options
+    const int totalOptions = stat_edits::StatType::TOTAL_COUNT;
+    char input_buffer[0x10];
 
     auto game = driver(L"GeometryDash.exe");
     if (!game.is_attached())
     {
-        printf("FAILED TO FIND GAME PROCESS!\n");
+        printf("Failed to find game process!\n");
         PAUSE();
         return EXIT_FAILURE;
     }
 
     while (true)
     {
-        stat_edits::StatType input = stat_edits::StatType::NONE;
-        while (input <= 0 || totalOptions < input)
+        stat_edits::StatType input = stat_edits::StatType::INVALID;
+        while (input < 0 || totalOptions < input)
         {
             system("cls");
-            printf("Select a stat to modify [1 - %d]:\n", totalOptions);
+            printf("Input 'q' to exit\nSelect a stat to modify [1 - %d]:\n", totalOptions);
 
-            for (int i = 0; i < totalOptions; ++i)
+            for (int i = 1; i <= totalOptions; ++i)
             {
-                printStatRow(i + 1, stat_edits::stat_types[i]);
+                print_stat_row(i, stat_edits::stat_types[i - 1]);
 
-                if ((i + 1) % 2 == 0)
+                if (i % 2 == 1)
                     printf("\n");
             }
 
             printf("\nInput: ");
-            scanf_s("%d", &input);
+            fgets(input_buffer, sizeof(input_buffer), stdin);
+            input = try_parse_input(input_buffer);
 
-            if (input <= 0 || totalOptions < input)
-                printf("Invalid input. Please try again.\n");
+            if (input == stat_edits::StatType::NONE) {
+                printf("Exiting...\n");
+                return EXIT_SUCCESS;
+            }
         }
 
         int value;
         printf("\nInput value to set for stat '%s'!\nValue: ", stat_edits::stat_types[input - 1]);
         scanf_s("%d", &value);
         printf("\nSetting '%s' value to %d!\n", stat_edits::stat_types[input - 1], value);
+
+        // since those random achievements aren't in the list anymore, adjust to fix gaunlets and list rewards since they come after
+        if (input >= 30)
+            input = stat_edits::StatType(input + 10);
 
         auto stats_instance = game.read<DWORD>(game.base + 0x4E82F0);
 

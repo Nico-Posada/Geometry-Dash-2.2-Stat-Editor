@@ -4,3 +4,5 @@
 #define STRUCT_PAD(size) unsigned char STR_MERGE(__pad_, __COUNTER__)[size]
 
 #define PAUSE() system("pause")
+
+#define IS_TRM_CHR(chr) (((chr) == '\0') || ((chr) == '\n'))
