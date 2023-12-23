@@ -52,7 +52,7 @@ int main()
             {
                 print_stat_row(i, stat_edits::stat_types[i - 1]);
 
-                if (i % 2 == 1)
+                if (i % 2 == 0)
                     printf("\n");
             }
 
