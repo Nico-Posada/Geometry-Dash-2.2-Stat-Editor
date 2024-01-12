@@ -1,3 +1,7 @@
+# Update 2.203
+RopTop revamped how stats are stored, so going to have to rereverse that, will remove this once I get it updated again.
+For now, the tool will not work.
+
 # 2.2 IS OUT!!!!
 The method for reading the game's stats hasnt been changed, but a few of the offsets did change, so those have been updated.  
 The new stats were added so you can modify those too.
