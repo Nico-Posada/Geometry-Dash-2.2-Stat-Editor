@@ -39,7 +39,7 @@ public:
 					{
 						if (wcscmp(ModuleEntry32.szModule, procname) == 0)
 						{
-							this->base = (DWORD)ModuleEntry32.modBaseAddr;
+							this->base = reinterpret_cast<DWORD>(ModuleEntry32.modBaseAddr);
 							break;
 						}
 					}
@@ -52,7 +52,7 @@ public:
 		}
 		
 		if (!this->base || !this->hProc)
-			printf("FAILED TO GET INFO | base: %X, hProc: %X\n", this->base, (unsigned int)this->hProc);
+			printf("FAILED TO GET INFO | base: %X, hProc: %X\n", this->base, reinterpret_cast<unsigned int>(this->hProc));
 		else
 			attached = true;
 
@@ -79,7 +79,7 @@ public:
 		return WriteProcessMemory(this->hProc, pAddress, buffer, size, NULL);
 	}
 
-	int read_memory(void* pAddress, void* out_buffer, SIZE_T size)
+	SIZE_T read_memory(void* pAddress, void* out_buffer, SIZE_T size)
 	{
 		SIZE_T bytes_read;
 		if (!ReadProcessMemory(this->hProc, pAddress, out_buffer, size, &bytes_read))

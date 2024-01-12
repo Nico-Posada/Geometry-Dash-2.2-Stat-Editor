@@ -75,30 +75,32 @@ int main()
         if (input >= 30)
             input = stat_edits::StatType(input + 10);
 
-        auto stats_instance = game.read<DWORD>(game.base + 0x4E82F0);
+        auto stats_instance = game.read<DWORD>(game.base + 0x4F0338);
 
-        auto stat_info = game.read<stat_edits::StatInfo*>(stats_instance + 0x164);
-        auto stat_info_delta = game.read<stat_edits::StatInfo*>(stats_instance + 0x16C);
+        auto stat_info = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x194);
+        auto stat_info_delta = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x1B4);
 
-        int* stat_info_delta_addr = stat_edits::get_stat_addr(game, stat_info_delta, input);
-        if (!stat_info_delta_addr)
+        stat_edits::StatLinkedList* stat_info_delta_addr = stat_edits::get_stat_addr(game, stat_info_delta, input);
+        if (stat_info_delta_addr == nullptr)
         {
             printf("Failed to get the delta address for the specified stat type!\n");
             PAUSE();
             return EXIT_FAILURE;
         }
 
-        int delta = game.read<int>(stat_info_delta_addr);
+        unsigned int delta = game.read<unsigned int>(&stat_info_delta_addr->value);
+        printf("delta: %d\n", delta);
 
-        int* stat_info_addr = stat_edits::get_stat_addr(game, stat_info, input);
-        if (!stat_info_addr)
+        stat_edits::StatLinkedList* stat_info_addr = stat_edits::get_stat_addr(game, stat_info, input);
+        if (stat_info_addr == nullptr)
         {
             printf("Failed to get the stat value address for the specified stat type!\n");
             PAUSE();
             return EXIT_FAILURE;
         }
 
-        game.write<int>(stat_info_addr, value + delta);
+        printf("previous value: %d\n", game.read<unsigned int>(&stat_info_addr->value) + delta);
+        game.write<unsigned int>(&stat_info_addr->value, value + delta);
 
         printf("Finished!\n\n");
         PAUSE();
