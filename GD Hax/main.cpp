@@ -99,7 +99,6 @@ int main()
             return EXIT_FAILURE;
         }
 
-        printf("previous value: %d\n", game.read<unsigned int>(&stat_info_addr->value) + delta);
         game.write<unsigned int>(&stat_info_addr->value, value + delta);
 
         printf("Finished!\n\n");
