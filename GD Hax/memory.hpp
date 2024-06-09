@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <tlhelp32.h>
 #include <iostream>
+#include <cstdint>
 
 class driver {
 private:
@@ -11,7 +12,7 @@ private:
 	bool attached = false;
 
 public:
-	DWORD base = NULL;
+	uintptr_t base = NULL;
 	driver(const wchar_t* procname)
 	{
 		PROCESSENTRY32 entry;
@@ -39,7 +40,7 @@ public:
 					{
 						if (wcscmp(ModuleEntry32.szModule, procname) == 0)
 						{
-							this->base = reinterpret_cast<DWORD>(ModuleEntry32.modBaseAddr);
+							this->base = reinterpret_cast<uint64_t>(ModuleEntry32.modBaseAddr);
 							break;
 						}
 					}
@@ -52,7 +53,7 @@ public:
 		}
 		
 		if (!this->base || !this->hProc)
-			printf("FAILED TO GET INFO | base: %X, hProc: %X\n", this->base, reinterpret_cast<unsigned int>(this->hProc));
+			printf("FAILED TO GET INFO | base: %p, hProc: %X\n", this->base, reinterpret_cast<unsigned int>(this->hProc));
 		else
 			attached = true;
 
@@ -97,7 +98,7 @@ public:
 	}
 
 	template<typename T>
-	T read(DWORD address)
+	T read(uintptr_t address)
 	{
 		return read<T>(reinterpret_cast<void*>(address));
 	}
@@ -109,7 +110,7 @@ public:
 	}
 
 	template<typename T>
-	bool write(DWORD address, T value)
+	bool write(uintptr_t address, T value)
 	{
 		return write<T>(reinterpret_cast<void*>(address), value);
 	}

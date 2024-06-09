@@ -75,10 +75,10 @@ int main()
         if (input >= 30)
             input = stat_edits::StatType(input + 10);
 
-        auto stats_instance = game.read<DWORD>(game.base + 0x4F0338);
+        auto stats_instance = game.read<uintptr_t>(game.base + 0x687E20);
 
-        auto stat_info = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x194);
-        auto stat_info_delta = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x1B4);
+        auto stat_info = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x248);
+        auto stat_info_delta = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x288);
 
         stat_edits::StatLinkedList* stat_info_delta_addr = stat_edits::get_stat_addr(game, stat_info_delta, input);
         if (stat_info_delta_addr == nullptr)
@@ -88,8 +88,7 @@ int main()
             return EXIT_FAILURE;
         }
 
-        unsigned int delta = game.read<unsigned int>(&stat_info_delta_addr->value);
-        printf("delta: %d\n", delta);
+        auto delta = game.read<uint32_t>(&stat_info_delta_addr->value);
 
         stat_edits::StatLinkedList* stat_info_addr = stat_edits::get_stat_addr(game, stat_info, input);
         if (stat_info_addr == nullptr)
@@ -99,7 +98,7 @@ int main()
             return EXIT_FAILURE;
         }
 
-        game.write<unsigned int>(&stat_info_addr->value, value + delta);
+        game.write<uint32_t>(&stat_info_addr->value, value + delta);
 
         printf("Finished!\n\n");
         PAUSE();

@@ -19,7 +19,7 @@ exit
 :compile
 set "SOLUTION_PATH=GD Hax.sln"
 set "CONFIGURATION=Release"
-set "PLATFORM=x86"
+set "PLATFORM=x64"
 
 "!MSBUILD_PATH!" "!SOLUTION_PATH!" /p:Configuration="!CONFIGURATION!" /p:Platform=!PLATFORM!
 pause
