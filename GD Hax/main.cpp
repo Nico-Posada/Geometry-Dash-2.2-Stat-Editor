@@ -75,7 +75,7 @@ int main()
         if (input >= 30)
             input = stat_edits::StatType(input + 10);
 
-        auto stats_instance = game.read<uintptr_t>(game.base + 0x687E20);
+        auto stats_instance = game.read<uintptr_t>(game.base + 0x6A4E78);
 
         auto stat_info = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x248);
         auto stat_info_delta = reinterpret_cast<stat_edits::StatInfo*>(stats_instance + 0x288);

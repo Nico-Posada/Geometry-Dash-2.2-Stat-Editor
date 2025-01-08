@@ -3,6 +3,9 @@ Stats editor for Geometry Dash. The game blew up in popularity for some reason, 
 There are many different public mods out there that do many different things, but one thing I noticed is that most of them involve byte patching functions, so I decided to avoid that route and take a more sophisticated approach to things.
 
 # Updates
+## 2.207
+Minor offset change, tool is up to date.
+
 ## 2.206
 Game updated to 64-bit architecture. Offsets changed a bit and the method to retreive stats was slightly changed but nothing too major. Tool is up to date again!
 
