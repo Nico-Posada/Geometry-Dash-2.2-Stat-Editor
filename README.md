@@ -2,6 +2,12 @@
 Stats editor for Geometry Dash. The game blew up in popularity for some reason, and I figured it would be a fun game to try to mod.
 There are many different public mods out there that do many different things, but one thing I noticed is that most of them involve byte patching functions, so I decided to avoid that route and take a more sophisticated approach to things.
 
+# Showcase
+<video controls>
+  <source src="media/showcase.mp4" type="video/mp4">
+</video>
+<hr><br>
+
 # Updates
 ## 2.207
 Minor offset change, tool is up to date.
