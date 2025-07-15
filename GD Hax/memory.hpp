@@ -3,6 +3,7 @@
 #include <tlhelp32.h>
 #include <iostream>
 #include <cstdint>
+#include <print>
 
 class driver {
 private:
@@ -53,7 +54,7 @@ public:
 		}
 		
 		if (!this->base || !this->hProc)
-			printf("FAILED TO GET INFO | base: %p, hProc: %X\n", this->base, reinterpret_cast<unsigned int>(this->hProc));
+			std::println("Failed to get process info!\nBase Address: {:#x}, hProc: {:#x}", this->base, reinterpret_cast<uintptr_t>(this->hProc));
 		else
 			attached = true;
 
@@ -65,22 +66,22 @@ public:
 		CloseHandle(this->hProc);
 	}
 
-	bool is_attached()
+	bool is_attached() const
 	{
 		return this->attached;
 	}
 
-	HANDLE get_hproc()
+	HANDLE get_hproc() const
 	{
 		return this->hProc;
 	}
 
-	bool write_memory(void* pAddress, void* buffer, SIZE_T size)
+	bool write_memory(void* pAddress, void* buffer, SIZE_T size) const
 	{
 		return WriteProcessMemory(this->hProc, pAddress, buffer, size, NULL);
 	}
 
-	SIZE_T read_memory(void* pAddress, void* out_buffer, SIZE_T size)
+	SIZE_T read_memory(void* pAddress, void* out_buffer, SIZE_T size) const
 	{
 		SIZE_T bytes_read;
 		if (!ReadProcessMemory(this->hProc, pAddress, out_buffer, size, &bytes_read))

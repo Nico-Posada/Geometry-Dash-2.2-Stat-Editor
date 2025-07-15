@@ -1,75 +1,134 @@
 #include <iostream>
+#include <string>
+#include <stdexcept>
+#include <print>
+
 #include "memory.hpp"
 #include "GDExploits.hpp"
 
-void print_stat_row(int index, const char* stat)
+// use the virtual terminal so we can use ansi escape sequences
+static void init_console()
 {
-    printf(" %2i) %-25s", index, stat);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    GetConsoleMode(hConsole, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hConsole, dwMode);
 }
 
-stat_edits::StatType try_parse_input(const char* buffer)
+inline void print_stat_row(int index, const char* stat)
 {
-    if (IS_TRM_CHR(buffer[0]))
-        return stat_edits::StatType::INVALID;
+    std::print(" {:2}) {:<25}", index, stat);
+}
 
-    if ((buffer[0] | 0x20) == 'q' && IS_TRM_CHR(buffer[1]))
-        return stat_edits::StatType::NONE;
-        
-    for (int i = 0; !IS_TRM_CHR(buffer[i]); ++i) {
-        if (!isdigit(buffer[i]))
-            return stat_edits::StatType::INVALID;
+int read_int(const std::string& prompt)
+{
+    int value;
+    while (true)
+    {
+        std::print("{}", prompt);
+        std::string input;
+        std::getline(std::cin, input);
+
+        try
+        {
+            value = std::stoi(input);
+            return value;
+        }
+        catch (const std::invalid_argument&)
+        {
+            std::println("Invalid input. Please enter an integer.");
+        }
+        catch (const std::out_of_range&)
+        {
+            std::println("Number is out of range. Please enter a valid integer.");
+        }
     }
+}
 
-    auto result = stat_edits::StatType(atoi(buffer));
-    if (stat_edits::StatType::NONE < result && result <= stat_edits::StatType::TOTAL_COUNT)
-        return result;
+stat_edits::StatType try_parse_input()
+{
+    std::string input;
+    while (true)
+    {
+        std::print("\nInput: ");
+        std::getline(std::cin, input);
 
-    return stat_edits::StatType::INVALID;
+        if (input.size() == 1 && tolower(input[0]) == 'q')
+        {
+            return stat_edits::StatType::NONE;
+        }
+
+        try
+        {
+            size_t pos;
+            int value = std::stoi(input, &pos);
+
+            // Check if entire string was consumed
+            if (pos == input.length())
+            {
+                stat_edits::StatType result = stat_edits::StatType(value);
+                if (stat_edits::StatType::NONE < result && result <= stat_edits::StatType::TOTAL_COUNT)
+                    return result;
+
+                std::println(CLEAR_SCREEN "Invalid input. Input a value that corresponds to a stat.");
+            }
+            else
+            {
+                std::println(CLEAR_SCREEN "Invalid input. Please enter only an integer.");
+            }
+        }
+        catch (const std::invalid_argument&)
+        {
+            std::println(CLEAR_SCREEN "Invalid input. Please enter an integer.");
+        }
+        catch (const std::out_of_range&)
+        {
+            std::println(CLEAR_SCREEN "Number is out of range. Please enter a valid integer.");
+        }
+
+        return stat_edits::StatType::INVALID;
+    }
 }
 
 int main()
 {
-    const int totalOptions = stat_edits::StatType::TOTAL_COUNT;
-    char input_buffer[0x10];
+    const int total_options = stat_edits::StatType::TOTAL_COUNT;
 
     auto game = driver(L"GeometryDash.exe");
     if (!game.is_attached())
     {
-        printf("Failed to find game process!\n");
-        PAUSE();
+        std::println("Failed to find game process!");
+        PAUSE_EXIT();
         return EXIT_FAILURE;
     }
 
     while (true)
     {
         stat_edits::StatType input = stat_edits::StatType::INVALID;
-        while (input < 0 || totalOptions < input)
+        while (input < 0 || total_options < input)
         {
-            system("cls");
-            printf("Input 'q' to exit\nSelect a stat to modify [1 - %d]:\n", totalOptions);
+            std::println("Input 'q' to exit\nSelect a stat to modify [1 - {}]:", total_options);
 
-            for (int i = 1; i <= totalOptions; ++i)
+            for (int i = 1; i <= total_options; ++i)
             {
                 print_stat_row(i, stat_edits::stat_types[i - 1]);
 
                 if (i % 2 == 0)
-                    printf("\n");
+                    std::print("\n");
             }
 
-            printf("\nInput: ");
-            fgets(input_buffer, sizeof(input_buffer), stdin);
-            input = try_parse_input(input_buffer);
-
-            if (input == stat_edits::StatType::NONE) {
-                printf("Exiting...\n");
+            input = try_parse_input();
+            if (input == stat_edits::StatType::NONE)
+            {
+                std::println("Exiting...");
                 return EXIT_SUCCESS;
             }
         }
 
-        int value;
-        printf("\nInput value to set for stat '%s'!\nValue: ", stat_edits::stat_types[input - 1]);
-        scanf_s("%d", &value);
-        printf("\nSetting '%s' value to %d!\n", stat_edits::stat_types[input - 1], value);
+        std::println("\nInput value to set for stat '{}'!", stat_edits::stat_types[input - 1]);
+        int value = read_int(std::format("Value [{} - {}]: ", INT_MIN, INT_MAX));
+        std::println("Setting '{}' value to {}!", stat_edits::stat_types[input - 1], value);
 
         // since those random achievements aren't in the list anymore, adjust to fix gaunlets and list rewards since they come after
         if (input >= 30)
@@ -83,8 +142,8 @@ int main()
         stat_edits::StatLinkedList* stat_info_delta_addr = stat_edits::get_stat_addr(game, stat_info_delta, input);
         if (stat_info_delta_addr == nullptr)
         {
-            printf("Failed to get the delta address for the specified stat type!\n");
-            PAUSE();
+            std::println("Failed to get the delta address for the specified stat type!");
+            PAUSE_EXIT();
             return EXIT_FAILURE;
         }
 
@@ -93,15 +152,16 @@ int main()
         stat_edits::StatLinkedList* stat_info_addr = stat_edits::get_stat_addr(game, stat_info, input);
         if (stat_info_addr == nullptr)
         {
-            printf("Failed to get the stat value address for the specified stat type!\n");
-            PAUSE();
+            std::println("Failed to get the stat value address for the specified stat type!");
+            PAUSE_EXIT();
             return EXIT_FAILURE;
         }
 
         game.write<uint32_t>(&stat_info_addr->value, value + delta);
 
-        printf("Finished!\n\n");
+        std::println("Success! Press any key to continue!");
         PAUSE();
+        std::print(CLEAR_SCREEN);
     }
 
     return EXIT_SUCCESS;
